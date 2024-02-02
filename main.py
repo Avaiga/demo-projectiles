@@ -42,8 +42,8 @@ in_sim = False
 score_text = "Score: 0"
 score = 0
 
-bullet_text = "Ammo: 🥏🥏🥏"
-bullets = 3
+bullet_text = "Ammo: 🥏🥏"
+bullets = 2
 
 highscore_text = "Highscore: 0"
 highscore = 0
@@ -74,7 +74,7 @@ def run_simulation(state: State) -> None:
                 reset_target(state)
                 state.in_sim = False
                 state.score = state.score + 1
-                state.bullets = 3
+                state.bullets = 2
                 state.target_size = state.target_size * 0.9
                 refresh_texts(state)
                 break
@@ -89,7 +89,7 @@ def run_simulation(state: State) -> None:
             state.chart_data = [state.positions, state.target]
         if state.bullets == 0:
             state.in_sim = False
-            state.bullets = 3
+            state.bullets = 2
             if state.score > state.highscore:
                 state.highscore = state.score
             state.score = 0
@@ -156,6 +156,7 @@ def on_init(state: State) -> None:
 
 
 def submit_highscore(state: State) -> None:
+    state.highscore = max(state.highscore, state.score)
     with open(highscore_path, "a") as f:
         f.write(f"\n{state.name},{state.highscore}")
     read_highscore(state)
@@ -189,7 +190,7 @@ page = """
 
 A simple Taipy game by Alexandre Sajus
 
-<center><|{name}|input|label=Enter your name:|><br/><|Submit Highscore|button|on_action=submit_highscore|><|{highscore_data}|table|width=40%|></center>
+<center><|{name}|input|label=Enter your name:|><br/><|Submit Highscore|button|on_action=submit_highscore|><|Refresh Highscores|button|on_action=read_highscore|><|{highscore_data}|table|width=40%|></center>
 """
 
 Gui(page).run(title="🥏Projectiles!")
